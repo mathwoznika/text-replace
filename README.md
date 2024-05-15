@@ -3,7 +3,7 @@
 ---
 
 ### Description
-The TextReplaceDictionary project is a tool that allows replacing text in a document based on a DE-PARA mapping stored in an Excel spreadsheet. If the text in the document matches a key in the spreadsheet, it will be replaced by the corresponding value for that key.
+The TextReplaceDictionary project is a tool that allows replacing text in a document based on a FROM-TO mapping stored in an Excel spreadsheet. If the text in the document matches a key in the spreadsheet, it will be replaced by the corresponding value for that key.
 
 ### Descrição
 O projeto TextReplaceDictionary é uma ferramenta que permite substituir texto em um documento com base em um mapeamento de DE-PARA armazenado em uma planilha Excel. Se o texto no documento corresponder a uma chave na planilha, será substituído pelo valor correspondente a essa chave.
