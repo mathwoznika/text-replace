@@ -1,64 +1,38 @@
 from pathlib import Path
-
-from openpyxl import load_workbook
 import os
-
-from src.functions import subistitute_words, normalized, get_map
-
-import time
-
-def main(data_path):
-
-    start_time = time.time()
-    counter = 0
-
-    for folder in os.listdir(data_path):
-        path = data_path / folder
-
-        if path.is_dir():
-            all_files = list(path.glob("*xlsx"))
-
-            for file in all_files:
-                print(file)
-                wb = load_workbook(file)
-                sheet = wb.active
-                first_row = 1
-                last_row = sheet.max_row
-                total_row = last_row - first_row
-                counter += total_row
-
-                translated = "Translated"
-
-                target_column = None
-
-                for header in sheet[1]:
-                    if header.value == translated:
-                        target_column = header.column
-                        break
-            
-                if target_column != None:
-                    for i in range(first_row+1, last_row+1):
-                        cell = str(sheet.cell(i, column=target_column).value)
-                        sheet.cell(i, column=target_column).value = subistitute_words(cell, get_map(file_path))
-                        new_cell= str(sheet.cell(i, column=target_column).value)
-                        # sheet.cell(i, column=target_column).value = normalized(new_cell)
-                        
-                    
-                wb.save(file)
-
-    end_time = time.time()
-    total_time = start_time - end_time
-
-    print(f"Levou {total_time} segundos para a execução e um total de {counter} linhas")
+from src.functions import excel_substitution
 
 
+def main(data_path: Path, column_name: str, from_to_path: Path, from_column: str,
+         to_column: str, normalize: bool = False):
+    """Applying, from an Excel FROM-TO, the substitution of the words contained in 
+    the spreadsheet.
 
+    Args:
+        data_path (Path): Path of the data folder.
+        column_name (str): Name of the column you need to change.
+        from_to_path (Path): Path of the FROM-TO file.
+        from_column (str): Name of the FROM column, this column contains the word will be
+        changed.
+        to_column (str): Name of the TO column, this column contains the word that 
+        replaced the old one.
+        normalize (bool, optional): If you need to normalize the words, normalize will be 
+        True, else will be False. Defaults to False.
+    """
 
-data_path = Path(__file__).parent / "data"
-
-file_path = Path(__file__).parent / "Interface translations Chinese - document control, training management and archive.xlsx"
+    for file_path in data_path.rglob("*xlsx"):
+        print(file_path)
+        excel_substitution(file_path, column_name, from_to_path, from_column, 
+                            to_column, normalize=normalize)
+                
 
 if __name__ == "__main__":
 
-    main(data_path)
+    data_path = Path(__file__).parent / "data"
+    column_name = "Translated"
+    from_to_path = Path(__file__).parent / "data" /"Interface translations Chinese - document control, training management and archive.xlsx"
+    from_column = "Current translation"
+    to_column = "Correct translation"
+
+    main(data_path, column_name, from_to_path, from_column, to_column, normalize=False)
 
